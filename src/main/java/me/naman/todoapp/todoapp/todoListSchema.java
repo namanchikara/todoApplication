@@ -6,14 +6,16 @@ import java.util.concurrent.atomic.AtomicLong;
 public class todoListSchema {
     private final long id;
     private String name;
-    private ArrayList< todoSchema > todoList;
+    private ArrayList<todoSchema> todoList;
     private AtomicLong taskCount;
+    private boolean isDeleted;
 
     public todoListSchema(long id, String name) {
         this.id = id;
         this.setName(name);
-        this.todoList = new ArrayList < todoSchema >  ();
+        this.todoList = new ArrayList<todoSchema>();
         this.taskCount = new AtomicLong();
+        this.setDeleted(false);
     }
 
     public long getId() {
@@ -34,6 +36,14 @@ public class todoListSchema {
 
     public ArrayList<todoSchema> getTodoList(){
         return this.todoList;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
 }
