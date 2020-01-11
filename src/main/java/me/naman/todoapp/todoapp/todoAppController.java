@@ -32,6 +32,13 @@ public class todoAppController {
         validateListId(id);
 		return new ResponseEntity<todoListSchema>(todoLists.get(id) , HttpStatus.OK);
     }
+
+    @RequestMapping(value="list/{id}", method=RequestMethod.DELETE)
+	public ResponseEntity<String> deleteList(@PathVariable("id") int id) throws todoException{
+        validateListId(id);
+        todoLists.get(id).setDeleted(true);
+		return new ResponseEntity<String>("List deleted successfully" , HttpStatus.OK);
+    }    
     
     @RequestMapping(value = "list/{id}/todo/", method = RequestMethod.POST)
     public ResponseEntity < todoListSchema > saveToDo(@RequestBody todoSchema payload, @PathVariable("id") int id) throws todoException {
