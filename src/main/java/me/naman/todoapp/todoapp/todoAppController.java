@@ -29,18 +29,14 @@ public class todoAppController {
 
     @RequestMapping(value="list/{id}", method=RequestMethod.GET)
 	public ResponseEntity<todoListSchema> getAllTodo(@PathVariable("id") int id) throws todoException{
-        if(!isValidListId(id)){
-            throw new todoException("List doesn't exist");
-        }
+        validateListId(id);
 		return new ResponseEntity<todoListSchema>(todoLists.get(id) , HttpStatus.OK);
     }
     
     @RequestMapping(value = "list/{id}/todo/", method = RequestMethod.POST)
     public ResponseEntity < todoListSchema > saveToDo(@RequestBody todoSchema payload, @PathVariable("id") int id) throws todoException {
-        if(!isValidListId(id)){
-            throw new todoException("List doesn't exist");
-        }
-
+        
+        validateListId(id);
         todoLists.get(id).addTask(payload.getTask());
 
         return new ResponseEntity < todoListSchema > (todoLists.get(id), HttpStatus.OK);
@@ -48,27 +44,22 @@ public class todoAppController {
 
     @RequestMapping(value="list/{Lid}/todo/{Tid}", method=RequestMethod.GET)
 	public ResponseEntity<todoSchema> getTodo(@PathVariable("Lid") int lid, @PathVariable("Tid") int tid) throws todoException{
-        if(!isValidListId(lid)){
-            throw new todoException("List doesn't exist");
-        }
+        validateListId(lid);
 
 		return new ResponseEntity<todoSchema>(todoLists.get(lid).findTodoById(tid) , HttpStatus.OK);
     }
     
     @RequestMapping(value = "list/{Lid}/todo/{Tid}", method = RequestMethod.DELETE)
     public ResponseEntity<String> removeTodoById(@PathVariable("Lid") int lid, @PathVariable("Tid") int tid) throws todoException{
-        if(!isValidListId(lid)){
-            throw new todoException("List doesn't exist");
-        }
-
+        validateListId(lid);
         todoLists.get(lid).removeTodoById(tid);
         
         return new ResponseEntity<String>("ToDo has been deleted", HttpStatus.OK);
 	}
 
-    public boolean isValidListId(int id){
+    public boolean validateListId(int id) throws todoException {
         if(id > listCount.get()-1 || todoLists.get(id).isDeleted()){
-            return false;
+            throw new todoException("List doesn't exist");
         }
         return true;
     }

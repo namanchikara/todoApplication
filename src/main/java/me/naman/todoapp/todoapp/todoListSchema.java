@@ -65,7 +65,7 @@ public class todoListSchema {
                 todoList.remove(i);
                 return;
             }
-        }
+        }  
 
         throw new todoException("ToDo doesn't exist");    
     }
@@ -77,6 +77,10 @@ public class todoListSchema {
             }
         }
         return false;
+    }
+
+    public void patchTodo(int tid){
+        
     }
 
 }
