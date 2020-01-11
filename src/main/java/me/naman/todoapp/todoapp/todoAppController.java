@@ -54,8 +54,22 @@ public class todoAppController {
         validateListId(lid);
         todoLists.get(lid).removeTodoById(tid);
         
-        return new ResponseEntity<String>("ToDo has been deleted", HttpStatus.OK);
-	}
+        return new ResponseEntity<String>("ToDo has been deleted!", HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "list/{Lid}/todo/{Tid}", method = RequestMethod.PATCH)
+    public ResponseEntity<String> patchTodoById(@RequestBody todoSchema payload, @PathVariable("Lid") int lid, @PathVariable("Tid") int tid) throws todoException{
+        validateListId(lid);
+        todoLists.get(lid).patchTodo(tid, payload);
+        return new ResponseEntity<String>("ToDo has been patched!", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "list/{Lid}/todo/{Tid}", method = RequestMethod.PUT)
+    public ResponseEntity<String> putTodoById(@RequestBody todoSchema payload, @PathVariable("Lid") int lid, @PathVariable("Tid") int tid) throws todoException{
+        validateListId(lid);
+        todoLists.get(lid).putTodo(tid, payload);
+        return new ResponseEntity<String>("PUT operation completed successfully!", HttpStatus.OK);
+    }
 
     public boolean validateListId(int id) throws todoException {
         if(id > listCount.get()-1 || todoLists.get(id).isDeleted()){

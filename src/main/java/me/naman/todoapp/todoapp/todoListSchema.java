@@ -70,17 +70,18 @@ public class todoListSchema {
         throw new todoException("ToDo doesn't exist");    
     }
 
-    public boolean isValidTodoId(int fid){
-        for(int i = 0; i < this.todoList.size(); i++){
-            if (todoList.get(i).getId() == fid){
-                return true;
-            }
-        }
-        return false;
+    public void patchTodo(int tid, todoSchema payload) throws todoException{
+        todoSchema todo = findTodoById(tid);
+        todo.setCompleted(payload.isCompleted() | todo.isCompleted());
+        if(payload.getTask() != null)
+            todo.setTask(payload.getTask());
+
     }
 
-    public void patchTodo(int tid){
-        
-    }
+	public void putTodo(int tid, todoSchema payload) throws todoException{
+        todoSchema todo = findTodoById(tid);
+        todo.setCompleted(payload.isCompleted());
+        todo.setTask(payload.getTask());
+	}
 
 }
