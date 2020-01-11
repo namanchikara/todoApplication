@@ -43,7 +43,29 @@ public class todoListSchema {
     }
 
     public void setDeleted(boolean isDeleted) {
+        if(isDeleted){
+            this.todoList.clear();
+        }
         this.isDeleted = isDeleted;
+    }
+
+    public todoSchema findTodoById(int fid) throws todoException{
+        for(int i = 0; i < this.todoList.size(); i++){
+            if (todoList.get(i).getId() == fid){
+                return todoList.get(i);
+            }
+        }
+
+        throw new todoException("ToDo doesn't exist");
+    }
+
+    public boolean isValidTodoId(int fid){
+        for(int i = 0; i < this.todoList.size(); i++){
+            if (todoList.get(i).getId() == fid){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -22,9 +22,16 @@ public class todoAppController {
         return "Demo";
     }
 
+    @RequestMapping(value = "/new-list", method = RequestMethod.POST)
+    public ResponseEntity < todoListSchema > newList(@RequestBody todoListSchema payload){
+    
+        todoLists.add(listCount.get(), new todoListSchema(listCount.getAndIncrement() , payload.getName()));
+        return new ResponseEntity < todoListSchema > (todoLists.get(listCount.get()-1), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "list/{id}/todo/", method = RequestMethod.POST)
     public ResponseEntity < todoListSchema > saveToDo(@RequestBody todoSchema payload, @PathVariable("id") int id) throws todoException {
-        if(id > listCount.get()-1 || todoLists.get(id).isDeleted()){
+        if(!isValidListId(id)){
             throw new todoException("List doesn't exist");
         }
 
@@ -33,14 +40,29 @@ public class todoAppController {
         return new ResponseEntity < todoListSchema > (todoLists.get(id), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/new-list", method = RequestMethod.POST)
-    public ResponseEntity < todoListSchema > newList(@RequestBody todoListSchema payload){
-    
-        todoLists.add(listCount.get(), new todoListSchema(listCount.getAndIncrement() , payload.getName()));
-        return new ResponseEntity < todoListSchema > (todoLists.get(listCount.get()-1), HttpStatus.OK);
+    @RequestMapping(value="list/{id}", method=RequestMethod.GET)
+	public ResponseEntity<todoListSchema> getAllTodo(@PathVariable("id") int id) throws todoException{
+        if(!isValidListId(id)){
+            throw new todoException("List doesn't exist");
+        }
+		return new ResponseEntity<todoListSchema>(todoLists.get(id) , HttpStatus.OK);
     }
+    
+    @RequestMapping(value="list/{Lid}/todo/{Tid}", method=RequestMethod.GET)
+	public ResponseEntity<todoSchema> getTodo(@PathVariable("Lid") int lid, @PathVariable("Tid") int tid) throws todoException{
+        if(!isValidListId(lid)){
+            throw new todoException("List doesn't exist");
+        }
 
+		return new ResponseEntity<todoSchema>(todoLists.get(lid).findTodoById(tid) , HttpStatus.OK);
+	}
 
+    public boolean isValidListId(int id){
+        if(id > listCount.get()-1 || todoLists.get(id).isDeleted()){
+            return false;
+        }
+        return true;
+    }
 
 }
 
