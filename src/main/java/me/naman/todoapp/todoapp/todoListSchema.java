@@ -59,6 +59,17 @@ public class todoListSchema {
         throw new todoException("ToDo doesn't exist");
     }
 
+    public void removeTodoById(int fid) throws todoException{
+        for(int i = 0; i < this.todoList.size(); i++){
+            if (todoList.get(i).getId() == fid){
+                todoList.remove(i);
+                return;
+            }
+        }
+
+        throw new todoException("ToDo doesn't exist");    
+    }
+
     public boolean isValidTodoId(int fid){
         for(int i = 0; i < this.todoList.size(); i++){
             if (todoList.get(i).getId() == fid){

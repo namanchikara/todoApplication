@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,6 +27,14 @@ public class todoAppController {
         return new ResponseEntity < todoListSchema > (todoLists.get(listCount.get()-1), HttpStatus.OK);
     }
 
+    @RequestMapping(value="list/{id}", method=RequestMethod.GET)
+	public ResponseEntity<todoListSchema> getAllTodo(@PathVariable("id") int id) throws todoException{
+        if(!isValidListId(id)){
+            throw new todoException("List doesn't exist");
+        }
+		return new ResponseEntity<todoListSchema>(todoLists.get(id) , HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "list/{id}/todo/", method = RequestMethod.POST)
     public ResponseEntity < todoListSchema > saveToDo(@RequestBody todoSchema payload, @PathVariable("id") int id) throws todoException {
         if(!isValidListId(id)){
@@ -40,14 +46,6 @@ public class todoAppController {
         return new ResponseEntity < todoListSchema > (todoLists.get(id), HttpStatus.OK);
     }
 
-    @RequestMapping(value="list/{id}", method=RequestMethod.GET)
-	public ResponseEntity<todoListSchema> getAllTodo(@PathVariable("id") int id) throws todoException{
-        if(!isValidListId(id)){
-            throw new todoException("List doesn't exist");
-        }
-		return new ResponseEntity<todoListSchema>(todoLists.get(id) , HttpStatus.OK);
-    }
-    
     @RequestMapping(value="list/{Lid}/todo/{Tid}", method=RequestMethod.GET)
 	public ResponseEntity<todoSchema> getTodo(@PathVariable("Lid") int lid, @PathVariable("Tid") int tid) throws todoException{
         if(!isValidListId(lid)){
@@ -55,6 +53,17 @@ public class todoAppController {
         }
 
 		return new ResponseEntity<todoSchema>(todoLists.get(lid).findTodoById(tid) , HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "list/{Lid}/todo/{Tid}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> removeTodoById(@PathVariable("Lid") int lid, @PathVariable("Tid") int tid) throws todoException{
+        if(!isValidListId(lid)){
+            throw new todoException("List doesn't exist");
+        }
+
+        todoLists.get(lid).removeTodoById(tid);
+        
+        return new ResponseEntity<String>("ToDo has been deleted", HttpStatus.OK);
 	}
 
     public boolean isValidListId(int id){
